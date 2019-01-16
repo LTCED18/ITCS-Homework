@@ -10,22 +10,54 @@
 #include <errno.h>
 using namespace std;
 
+const int MAXSIZE = 10;
+const int ROW = 7;
+const int COLUMN = 10;
+
+bool loadArray(const string fileName, char days[][COLUMN]);
+void printResults(char days[ROW][COLUMN]);
+
 int main()
 {
+	
+	char days[ROW][COLUMN] = { {'\0'} }; // initalizes to null, keeps weird things from printing out in unused parts of the array.
+	char daysSorted[MAXSIZE] = { {'\0'} };
+	//int n = sizeof(days);
+
+	loadArray("Days_of_the_Week.txt", days);
+
+	for (int i = 0; i < ROW; i++) {
+
+		for (int j = i + 1; j < ROW; j++)
+		{
+			if (strcmp(days[i], days[j]) > 0)
+			{
+				strcpy_s(daysSorted, days[i]);
+				strcpy_s(days[i], days[j]);
+				strcpy_s(days[j], daysSorted);
+			}
+		}
+
+	}
+	 
+   printResults (days);
+
+	system("pause");
+	return 0;
+}
+
+bool loadArray(const string fileName, char days[][COLUMN] ) {
 	ifstream inFile;
 	char storage;
-	char days[7][2] = { {'\0'} };
-	char daysSorted[2] = { {'\0'} };
-	int n = sizeof(days);
-
-	inFile.open("day_name.txt");
+	inFile.open("Days_of_the_Week.txt");
 
 	if (!inFile) {
 		cout << "Error";
+		return false;
 	}
 
-	for (int i = 0; i < 7; i++) {
-		for (int j = 0; j < 2; j++) {
+	for (int i = 0; i < ROW; i++) {
+		for (int j = 0; j < COLUMN; j++) {
 			inFile >> storage;
 			if (storage == ',') {
 				break;
@@ -37,24 +69,17 @@ int main()
 
 	}
 
-	for (int j = 0; j < n; j++){
-	
-		for (int i = j + 1; i < 7; i++)
-		{
-			if (strcmp(days[j], days[i]) > 0)
-			{
-				strcpy_s(daysSorted, days[j]);
-				strcpy_s(days[j], days[i]);
-				strcpy_s(days[i], daysSorted);
-			}
-		}
-	
-}
+	inFile.close();
 
-	for (int i = 0; i < 7; i++) {
+	return true;
+}	
+
+void printResults(char days[ROW][COLUMN]) {
+	
+	for (int i = 0; i < ROW; i++) {
 		cout << i + 1 << ": ";
-		for (int j = 0; j < 2; j++) {
-			if (days[i][j] == ' ') {
+		for (int j = 0; j < COLUMN; j++) {
+			if (days[i][j] == '\0') {
 				break;
 			}
 			else {
@@ -64,11 +89,4 @@ int main()
 
 		cout << endl;
 	}
-
-	cout << endl;
-
-	inFile.close();
-
-	system("pause");
-	return 0;
 }
