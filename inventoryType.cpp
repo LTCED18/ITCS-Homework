@@ -70,7 +70,12 @@ void inventoryType::setPartDescription(string partDescrip) {
 }
 
 void inventoryType::setQuantity(int quant) {
-	quantity = quant;
+	if (quant < 0) {
+		quantity = 0;
+	}
+	else {
+		quantity = quant;
+	}
 }
 
 void inventoryType::setPricePerItem(double ppi) {
